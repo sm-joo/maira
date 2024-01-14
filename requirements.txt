@@ -1,0 +1,7 @@
+datasets==2.16.1
+finnhub-python==2.4.19
+matplotlib==3.8.2
+numpy==1.26.0
+openai==1.7.2
+pandas==2.1.1
+streamlit==1.27.2
