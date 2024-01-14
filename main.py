@@ -30,12 +30,7 @@ else:
 
 if st.sidebar.button("실행하기"):
     st.write("")
-    
 
-
-
-#######################################################################
-#########################여기서부터 helper로 빠질 예정##################
 #######################################################################
 
 
@@ -59,7 +54,6 @@ finnhub_client = finnhub.Client(api_key=st.secrets["finnhub_key"])
 client = OpenAI(api_key = st.secrets["openapi_key"])
 
 def get_company_prompt(symbol):
-
     profile = finnhub_client.company_profile2(symbol=symbol)
 
     company_template = "[기업소개]:\n\n{name}은 {finnhubIndustry}섹터의 기업입니다. {ipo}에 상장하였으며, 오늘날 주가총액은 {currency} {marketCapitalization:.2f}입니다. "
@@ -113,19 +107,12 @@ def map_bin_label(bin_lb):
 
     return lb
 
-
-#오늘 날짜
 def get_curday():
     return date.today().strftime("%Y-%m-%d")
 
-# 오늘 날짜 기준, n week 이전 날짜
 def n_weeks_before(date_string, n):
     date = datetime.strptime(date_string, "%Y-%m-%d") - timedelta(days=7*n)
     return date.strftime("%Y-%m-%d")
-
-
-# steps = [n_weeks_before(curday, n) for n in range(n_weeks + 1)][::-1]
-# -> 오늘부터 (과거로) 일주일마다 n_week 개만큼 날짜를 찍어서 -> 역수로 전환 (과거부터 현재까지)
 
 def get_stock_data(stock_symbol, steps):
 
@@ -308,11 +295,6 @@ def query_gpt4(symbol, past_weeks=3, with_basics=True):
     return prompts, completion
 
 
-
-
-
-#######################################################################
-########################여기서까지 helper로 빠질 예정####################
 #######################################################################
 
 if ticker and st.sidebar.button:
@@ -327,10 +309,10 @@ if ticker and st.sidebar.button:
   st.divider()
   
   
-#오늘 날짜
+
 def get_curday():
     return date.today().strftime("%Y-%m-%d")
-#(New) 일년전 날짜     
+
 def get_one_year_before(end_date):
   end_date = datetime.strptime(end_date, "%Y-%m-%d")
   one_year_before = end_date - timedelta(days=365)
@@ -341,15 +323,10 @@ def get_stock_data_daily(symbol):
   stock_data = yf.download(symbol, StartDate, EndDate)
   return stock_data[["Adj Close", "Volume"]]
 
-# 주식 데이터 가져오기
+
 if ticker and st.sidebar.button:    
   data = get_stock_data_daily(ticker)
-    
-  # define chart
-  
-        
-  
-# 주식 데이터 가져오기
+
 if ticker and st.sidebar.button:
     
   data = get_stock_data_daily(ticker)
@@ -374,16 +351,3 @@ if ticker and st.sidebar.button:
   st.write('\n :sunglasses: 최근 1년 주가 흐름과 거래량 추이를 참조하세요. ')
   st.pyplot(fig)
   
-
-
-# # 예쁜 text box 만들기
-# user_input = st.text_input("예쁜 text box", "여기에 입력하세요")
-# # 예쁜 text box에 입력된 내용 출력하기
-# st.write("입력된 내용: ", user_input)
-
-
-# # text box 색상과 폰트 크기 바꾸고, text box만들기 
-# st.markdown('<style>input[type="text"]{color: blue; font-size: 20px;}</style>', unsafe_allow_html=True)
-# user_input = st.text_input("text box", "여기에 입력하세요")
-
-# st.write("입력된 내용2: ", user_input)
