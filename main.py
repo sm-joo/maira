@@ -24,16 +24,30 @@ st.subheader("by 미래에셋증권 AI솔루션본부")
 
 st.write("")
 
-ticker = st.sidebar.text_input('주식 심볼을 입력하세요 (예: AAPL)', 'AAPL')
+# ticker = st.sidebar.text_input('주식 심볼을 입력하세요 (예: AAPL)', 'AAPL')
 
-# max_week= st.sidebar.select_box('과거 몇주의 데이터를 보시겠습니까?, [2,3,4,5,6,7,8]')
-max_week = st.sidebar.slider(
+# max_week = st.sidebar.slider(
+#     '과거 몇주의 데이터를 보시겠습니까? \n (Default는 최근 3주입니다. )',
+#     2,8,3 )
+
+# checkbox_btn = st.sidebar.checkbox('재무정보 포함 여부')
+# if checkbox_btn:
+#     with_basic = True 
+#     st.write('재무정보를 포함합니다.')
+# else: 
+#     with_basic=False
+
+
+# if st.sidebar.button("실행하기"):
+#     st.write("")
+    
+ticker = st.text_input('주식 심볼을 입력하세요 (예: AAPL)', 'AAPL')
+
+max_week = st.slider(
     '과거 몇주의 데이터를 보시겠습니까? \n (Default는 최근 3주입니다. )',
     2,8,3 )
-# st.write(f'최근 {max_week}주의 데이터를 불러옵니다.')
 
-#체크박스       
-checkbox_btn = st.sidebar.checkbox('재무정보 포함 여부')
+checkbox_btn = st.checkbox('재무정보 포함 여부')
 if checkbox_btn:
     with_basic = True 
     st.write('재무정보를 포함합니다.')
@@ -41,9 +55,8 @@ else:
     with_basic=False
 
 
-if st.sidebar.button("실행하기"):
+if st.button("실행하기"):
     st.write("")
-    
 
 
 
@@ -298,7 +311,7 @@ def query_gpt4(symbol, past_weeks=3, with_basics=True):
 
 
 
-if st.sidebar.button:
+if st.button:
   # prompts, completion_gpt = hp.query_gpt4(ticker, max_week, with_basic)
   prompts, completion_gpt = query_gpt4(ticker, max_week, with_basic)
   st.write(f':sunglasses: {ticker}에 대한 :orange[AI분석결과]는 다음과 같습니다.')
@@ -324,13 +337,13 @@ def get_stock_data_daily(symbol):
   stock_data = yf.download(symbol, StartDate, EndDate)
   return stock_data[["Adj Close", "Volume"]]
 
-if ticker and st.sidebar.button:    
+if st.button:    
   data = get_stock_data_daily(ticker)
 
         
   
 
-if st.sidebar.button:
+if st.button:
     
   data = get_stock_data_daily(ticker)
     
