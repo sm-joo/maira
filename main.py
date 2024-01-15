@@ -5,13 +5,26 @@ import yfinance as yf
 import helper as hp
 from datetime import date, datetime, timedelta
 import matplotlib.pyplot as plt
+import os
+import re
+import csv
+import math
+import time
+import json
+import random
+import finnhub
+import datasets
+from datetime import date, datetime, timedelta
+from collections import defaultdict
+from datasets import Dataset
+from openai import OpenAI
 
 st.title('AI가 말해주는 주식 정보 (해외)')
 st.subheader("by 미래에셋증권 AI솔루션본부")
 
 st.write("")
 
-ticker = st.sidebar.text_input('주식 심볼을 입력하세요 (예: AAPL)')
+ticker = st.sidebar.text_input('주식 심볼을 입력하세요 (예: AAPL)', 'AAPL')
 
 # max_week= st.sidebar.select_box('과거 몇주의 데이터를 보시겠습니까?, [2,3,4,5,6,7,8]')
 max_week = st.sidebar.slider(
@@ -30,30 +43,15 @@ else:
 
 if st.sidebar.button("실행하기"):
     st.write("")
+    
 
-#######################################################################
 
 
-import os
-import re
-import csv
-import math
-import time
-import json
-import random
-import finnhub
-import datasets
-import pandas as pd
-import yfinance as yf
-from datetime import date, datetime, timedelta
-from collections import defaultdict
-from datasets import Dataset
-from openai import OpenAI
-
-finnhub_client = finnhub.Client(api_key=st.secrets["finnhub_key"])
-client = OpenAI(api_key = st.secrets["openapi_key"])
+finnhub_client = finnhub.Client(api_key=st.secrets["FINNHUB_KEY"])
+client = OpenAI(api_key = st.secrets["OPENAI_API_KEY"])
 
 def get_company_prompt(symbol):
+
     profile = finnhub_client.company_profile2(symbol=symbol)
 
     company_template = "[기업소개]:\n\n{name}은 {finnhubIndustry}섹터의 기업입니다. {ipo}에 상장하였으며, 오늘날 주가총액은 {currency} {marketCapitalization:.2f}입니다. "
@@ -107,12 +105,15 @@ def map_bin_label(bin_lb):
 
     return lb
 
+
+
 def get_curday():
     return date.today().strftime("%Y-%m-%d")
 
 def n_weeks_before(date_string, n):
     date = datetime.strptime(date_string, "%Y-%m-%d") - timedelta(days=7*n)
     return date.strftime("%Y-%m-%d")
+
 
 def get_stock_data(stock_symbol, steps):
 
@@ -295,9 +296,9 @@ def query_gpt4(symbol, past_weeks=3, with_basics=True):
     return prompts, completion
 
 
-#######################################################################
 
-if ticker and st.sidebar.button:
+
+if st.sidebar.button:
   # prompts, completion_gpt = hp.query_gpt4(ticker, max_week, with_basic)
   prompts, completion_gpt = query_gpt4(ticker, max_week, with_basic)
   st.write(f':sunglasses: {ticker}에 대한 :orange[AI분석결과]는 다음과 같습니다.')
@@ -323,31 +324,32 @@ def get_stock_data_daily(symbol):
   stock_data = yf.download(symbol, StartDate, EndDate)
   return stock_data[["Adj Close", "Volume"]]
 
-
 if ticker and st.sidebar.button:    
   data = get_stock_data_daily(ticker)
 
-if ticker and st.sidebar.button:
+        
+  
+
+if st.sidebar.button:
     
   data = get_stock_data_daily(ticker)
     
-  # define chart
   fig, ax1 = plt.subplots(figsize=(14, 5))
 
-  # draw price 
   ax1.plot(data['Adj Close'], label='Price(USD)', color='blue')
   ax1.set_xlabel('date')
   ax1.set_ylabel('Price(USD)', color='blue')
   ax1.tick_params('y', colors='blue')
   ax1.set_title(f'{ticker} Stock price and Volume Chart (recent 1 year)')
 
-  # draw volumn 
   ax2 = ax1.twinx()
   ax2.bar(data.index, data['Volume'], label='Volume', alpha=0.2, color='green')
   ax2.set_ylabel('Volume', color='green')
   ax2.tick_params('y', colors='green')
     
-    # 차트 표시
+
   st.write('\n :sunglasses: 최근 1년 주가 흐름과 거래량 추이를 참조하세요. ')
   st.pyplot(fig)
   
+
+
