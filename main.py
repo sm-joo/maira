@@ -138,7 +138,7 @@ def get_prompt_earning (ticker):
         if datetime.strptime(curday, "%Y-%m-%d") > (datetime.strptime(date_announce, "%Y-%m-%d") + timedelta(days=7)):
             news_after7 = get_news (ticker, Start_date_after7, End_date_after7)
             terms_after7 = gen_term_stock(ticker, Start_date_after7, End_date_after7)
-            prompt_news_before = "Earning call 발표 7일 이후, {}: \n\n ".format(terms_after7)
+            prompt_news_after7 = "Earning call 발표 7일 이후, {}: \n\n ".format(terms_after7)
             for i in news_after7:
                 prompt_news_after7 += "\n" + i 
         else :
